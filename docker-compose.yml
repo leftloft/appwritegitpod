@@ -63,7 +63,7 @@ services:
     depends_on:
       - mariadb
       - redis
-#      - clamav
+      - clamav
       - influxdb
     environment:
       - _APP_ENV
@@ -647,22 +647,22 @@ services:
     restart: unless-stopped
     command: >
       redis-server
-      --maxmemory            512mb
+      --maxmemory            2512mb
       --maxmemory-policy     allkeys-lru
-      --maxmemory-samples    5
+      --maxmemory-samples    15
     networks:
       - appwrite
     volumes:
       - appwrite-redis:/data:rw
 
-  # clamav:
-  #   image: appwrite/clamav:1.2.0
-  #   container_name: appwrite-clamav
-  #   restart: unless-stopped
-  #   networks:
-  #     - appwrite
-  #   volumes:
-  #     - appwrite-uploads:/storage/uploads
+   clamav:
+     image: appwrite/clamav:1.2.0
+     container_name: appwrite-clamav
+     restart: unless-stopped
+     networks:
+       - appwrite
+     volumes:
+       - appwrite-uploads:/storage/uploads
 
   influxdb:
     image: appwrite/influxdb:1.5.0
@@ -685,15 +685,15 @@ services:
       - _APP_INFLUXDB_HOST
       - _APP_INFLUXDB_PORT
 
-  # grafana:
-  #   image: grafana/grafana
-  #   container_name: appwrite-grafana
-  #   ports:
-  #     - "3001:3000"
-  #   networks:
-  #     - appwrite
-  #   volumes:
-  #     - appwrite-grafana:/var/lib/grafana
+   grafana:
+     image: grafana/grafana
+     container_name: appwrite-grafana
+     ports:
+       - "3001:3000"
+     networks:
+       - appwrite
+     volumes:
+       - appwrite-grafana:/var/lib/grafana
 
 networks:
   gateway:
@@ -711,4 +711,4 @@ volumes:
   appwrite-influxdb:
   appwrite-config:
   appwrite-executor:
-  # appwrite-grafana:
+  appwrite-grafana:
